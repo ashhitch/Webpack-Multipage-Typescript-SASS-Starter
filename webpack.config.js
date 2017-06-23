@@ -2,7 +2,9 @@ var path = require('path');
 var webpack = require('webpack');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var CleanWebpackPlugin = require('clean-webpack-plugin');
+var Dashboard = require('webpack-dashboard');
 var DashboardPlugin = require('webpack-dashboard/plugin');
+var dashboard = new Dashboard();
 
 // the path(s) that should be cleaned
 var pathsToClean = [
@@ -11,9 +13,9 @@ var pathsToClean = [
 
 // the clean options to use
 var cleanOptions = {
-  exclude:  [],
-  verbose:  true,
-  dry:      false
+  exclude: [],
+  verbose: true,
+  dry: false
 }
 
 
@@ -44,11 +46,11 @@ module.exports = {
       },
       {
         test: /\.(sass|scss)$/,
-      loader: ExtractTextPlugin.extract(['css-loader', 'sass-loader','postcss-loader'])
+        loader: ExtractTextPlugin.extract(['css-loader', 'sass-loader', 'postcss-loader'])
       }
     ],
     //Loaders work on invidual files
-   
+
   },
   output: {
     path: path.join(__dirname, 'dist'), //Where to store file, use publichPath if need to update path for production e.g For CDN
@@ -58,7 +60,11 @@ module.exports = {
 
   //Work at bundle or chunk level  and usally at the end of of bundling
   plugins: [
-    new DashboardPlugin(),
+    new DashboardPlugin({
+      hot: true,
+      quiet: true, // lets WebpackDashboard do its thing
+      historyApiFallback: true
+    }),
     new CleanWebpackPlugin(pathsToClean, cleanOptions),
     new webpack.ProvidePlugin({
       $: 'jquery',
@@ -69,7 +75,7 @@ module.exports = {
       name: 'common'
     }),
     new webpack.optimize.UglifyJsPlugin(),
-    new ExtractTextPlugin({ 
+    new ExtractTextPlugin({
       filename: 'styles/[name].bundle.css',
       allChunks: true,
     }),

@@ -1,9 +1,10 @@
 
 import 'jQuery';
 
-console.log('page A');
+console.log('page A loaded');
 
-import 'jQuery';
+
+$('body').addClass('loaded-page-a');
 
 function component () {
   var element = document.createElement('div');
